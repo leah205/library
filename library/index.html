@@ -5,8 +5,10 @@
     <link rel = 'stylesheet' href = 'style.css'><link>
 </head>
 <body>
+<header>
+    <h1> Library</h1>
+    <button id = 'addBook'>+</button></header>
 
-    
     <form>
         <div class = 'form-div'>
         <div  class = 'in-form' id = 'title-div'>
@@ -32,10 +34,7 @@
 </div></div>
 <button type = 'button' id = 'submit'>Submit</button>
 </form>
-
 <div id = 'book-container'>
-    <h1> Library</h1>
-    <button id = 'addBook'>+</button>
 </div>
 
     <script>
@@ -78,7 +77,7 @@ function addBookToLibrary(){
          isReadInput = 'yes'
     }
     else{
-isReadInput = 'no';
+    isReadInput = 'no';
     }
     let newBook = new Book( 
         authorInput,
@@ -87,41 +86,68 @@ isReadInput = 'no';
         isReadInput,);
         newBook.logBook();
         showForm();
-        createBook();
      
      
      
 }
+let bookObj;
 Book.prototype.logBook = function(){
-    let bookArray = [`author: ${this.author} `,`title: ${this.title} `,` Pages: ${this.pages}`, `Read: ${this.isRead}`]
-   //bookArray = bookArray.join('<br>')
+      bookObj = {author: this.author, title:this.title, pages:this.pages, read:this.isRead};
         myLibrary.push(
-      bookArray
+      bookObj
         );
        console.log(myLibrary);
+         createBook();
+       
         }
 function createBook(){
 const container = document.querySelector('#book-container');
 const removeBtn = document.createElement('button');
 removeBtn.textContent = 'Remove';
 removeBtn.classList.add('remove-button');
-const libraryBook = document.createElement('div');
-libraryBook.classList.add('library-book');
+const readBook = document.createElement('p');
+const authorOfBook = document.createElement('p');
+const pagesInBook = document.createElement('p');
+const titleOfBook = document.createElement('p')
 const bookGroup = document.createElement('div');
 bookGroup.classList.add('book-group')
 container.appendChild(bookGroup);
-libraryBook.textContent = myLibrary[myLibrary.length - 1];
-bookGroup.appendChild(libraryBook);
-bookGroup.appendChild(removeBtn);
+authorOfBook.textContent = 'author:' + bookObj.author;
+pagesInBook.textContent = 'Pages:' + bookObj.pages;
+titleOfBook.textContent = 'Title:' + bookObj.title;
+readBook.textContent = 'Read: ' + bookObj.read;
+const isReadBtn = document.createElement('button');
+isReadBtn.classList.add('is-read-btn');
+bookGroup.appendChild(readBook);
+bookGroup.appendChild(titleOfBook);
+bookGroup.appendChild(pagesInBook);
+bookGroup.appendChild(authorOfBook);
 
+bookGroup.appendChild(removeBtn);
+bookGroup.appendChild(isReadBtn);
+isReadBtn.textContent = 'update read status'
+    isReadBtn.addEventListener('click', changeRead)
      removeBtn.addEventListener('click', removeBook)   
      function removeBook(){
         let x =  removeBtn.parentElement;
-        x.removeAttribute('class');
-        x.removeChild(libraryBook);
-        x.removeChild(removeBtn);
+        container.removeChild(x);
+        }
+        function changeRead(){
+            console.log(bookObj.read)
+        if (bookObj.read ==  'yes'){
+            bookObj.read = 'no';
+            readBook.textContent = 'Read: ' + bookObj.read;
+
+        }
+        else{
+            bookObj.read = 'yes';
+            readBook.textContent = 'Read: ' + bookObj.read;
+        }
+        console.log(bookObj.read)
+    }
+   
 }
-   }
+  
 
     </script>
     
