@@ -39,10 +39,13 @@
 
     <script>
 let myLibrary = [];
-const newConsole = document.querySelector('#console');
 const submitBtn = document.querySelector('#submit');
 const form = document.querySelector('form');
 const newBookBtn = document.querySelector('#addBook');
+let isReadInput;
+let authorBox = document.querySelector('#author');
+let titleBox = document.querySelector('#title');
+let pagesBox = document.querySelector('#pages');
 
 
    
@@ -54,6 +57,9 @@ function showForm(){
       }
       else{
         form.style.display = 'block';
+        authorBox.value = '';
+        titleBox.value = '';
+        pagesBox.value= '';
       }
     }
 
@@ -68,10 +74,9 @@ this.isRead = isRead
     addBookToLibrary.prototype = Object.create(Book);
 
 function addBookToLibrary(){
-    let isReadInput;
-    let authorInput = document.querySelector('#author').value;
-    let titleInput = document.querySelector('#title').value;
-    let pagesInput = document.querySelector('#pages').value;
+    let authorInput = authorBox.value;
+    let titleInput = titleBox.value;
+    let pagesInput = pagesBox.value;
     readInput = document.querySelector('#read');
     if(readInput.checked === true){
          isReadInput = 'yes'
@@ -86,31 +91,43 @@ function addBookToLibrary(){
         isReadInput,);
         newBook.logBook();
         showForm();
+       
+        for(let i = 0; i< myLibrary.length; i++){
+            removeBook();
+            console.log(myLibrary);
+        }
+        for(let i = 0; i< myLibrary.length; i++){
+            bookObj = myLibrary[i];
+            createBook(bookObj, i);
+        }
+
      
      
-     
+    
 }
 let bookObj;
 Book.prototype.logBook = function(){
       bookObj = {author: this.author, title:this.title, pages:this.pages, read:this.isRead};
-        myLibrary.push(
-      bookObj
-        );
-       console.log(myLibrary);
-         createBook();
-       
+        myLibrary.push(bookObj);
         }
-function createBook(){
-const container = document.querySelector('#book-container');
-const removeBtn = document.createElement('button');
-removeBtn.textContent = 'Remove';
-removeBtn.classList.add('remove-button');
-const readBook = document.createElement('p');
-const authorOfBook = document.createElement('p');
-const pagesInBook = document.createElement('p');
-const titleOfBook = document.createElement('p')
-const bookGroup = document.createElement('div');
-bookGroup.classList.add('book-group')
+        let container = document.querySelector('#book-container')
+   function removeBook(){
+if(!container.firstElementChild) return;
+    container.removeChild( container.firstElementChild);
+   }
+  
+    function createBook(item, number){
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = 'Remove';
+    removeBtn.classList.add('remove-button');
+    const readBook = document.createElement('p');
+    const authorOfBook = document.createElement('p');
+    const pagesInBook = document.createElement('p');
+    const titleOfBook = document.createElement('p')
+    const bookGroup = document.createElement('div');
+    bookGroup.classList.add('book-group');
+    bookGroup.classList.add(number);
+    bookGroup.setAttribute['id', number]
 container.appendChild(bookGroup);
 authorOfBook.textContent = 'author:' + bookObj.author;
 pagesInBook.textContent = 'Pages:' + bookObj.pages;
@@ -122,18 +139,23 @@ bookGroup.appendChild(readBook);
 bookGroup.appendChild(titleOfBook);
 bookGroup.appendChild(pagesInBook);
 bookGroup.appendChild(authorOfBook);
-
 bookGroup.appendChild(removeBtn);
 bookGroup.appendChild(isReadBtn);
-isReadBtn.textContent = 'update read status'
-    isReadBtn.addEventListener('click', changeRead)
-     removeBtn.addEventListener('click', removeBook)   
-     function removeBook(){
-        let x =  removeBtn.parentElement;
-        container.removeChild(x);
-        }
+isReadBtn.textContent = 'update read status';
+isReadBtn.addEventListener('click', changeRead);
+removeBtn.addEventListener('click', removeBookBtn);
+function removeBookBtn(){
+    parent = removeBtn.parentNode;
+x = bookGroup.getAttribute('class')
+console.log(bookGroup);
+x = Array.from(x);
+let y = (x[x.length - 1]);
+myLibrary.splice(y);
+ container.removeChild(parent);
+     }
+
         function changeRead(){
-            console.log(bookObj.read)
+            console.log(bookObj.read);
         if (bookObj.read ==  'yes'){
             bookObj.read = 'no';
             readBook.textContent = 'Read: ' + bookObj.read;
