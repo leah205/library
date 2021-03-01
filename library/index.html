@@ -38,6 +38,38 @@
 </div>
 
     <script>
+        function storageAvailable(type) {
+    var storage;
+    try {
+        storage = window[type];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+    }
+}
+if (storageAvailable('localStorage')) {
+  // Yippee! We can use localStorage awesomeness
+  console.log('yay')
+}
+else {
+  // Too bad, no localStorage for us
+  console.log('no')
+}
 let myLibrary = [];
 const submitBtn = document.querySelector('#submit');
 const form = document.querySelector('form');
@@ -62,16 +94,22 @@ function showForm(){
         pagesBox.value= '';
       }
     }
-
-    function Book(title,author,pages, isRead){
+    let bookObj;
+    class Book{
+        constructor(title,author,pages, isRead){
 this.title = title,
 this.pages = pages,
 this.author = author,
 this.isRead = isRead
+}
+logBook(){
+    bookObj = {author: this.author, title:this.title, pages:this.pages, read:this.isRead};
+        myLibrary.push(bookObj);
+}
     }
  
-    
-    addBookToLibrary.prototype = Object.create(Book);
+
+   
 
 function addBookToLibrary(){
     let authorInput = authorBox.value;
@@ -105,11 +143,8 @@ function addBookToLibrary(){
      
     
 }
-let bookObj;
-Book.prototype.logBook = function(){
-      bookObj = {author: this.author, title:this.title, pages:this.pages, read:this.isRead};
-        myLibrary.push(bookObj);
-        }
+
+
         let container = document.querySelector('#book-container')
    function removeBook(){
 if(!container.firstElementChild) return;
@@ -169,8 +204,6 @@ myLibrary.splice(y);
     }
    
 }
-  
-
     </script>
     
 </body>
